@@ -1,43 +1,6 @@
 ```
-# Compiled and build artifacts
-*.class
-*.o
-*.obj
-*.out
-build/
-target/
-
-# Dependencies
-.gradle/
-libs/
-lib/
-
-# Logs and temp files
-*.log
-*.tmp
-
-# Environment
-.env
-.env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Package manager caches
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.mypy_cache/
-.pytest_cache/
+# SSH keys
+.ssh/id_rsa
+.ssh/id_rsa.pub
+.ssh/mpessentials_deploy_key
 ```
