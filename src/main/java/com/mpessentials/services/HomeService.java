@@ -57,7 +57,7 @@ public class HomeService {
         }
 
         Location loc = new Location(
-            player.getWorld().getServer().getWorld(home.world()),
+            org.bukkit.Bukkit.getWorld(home.world()),
             home.x(), home.y(), home.z(), home.yaw(), home.pitch()
         );
         

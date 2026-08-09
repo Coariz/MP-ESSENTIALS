@@ -41,7 +41,7 @@ public class WarpService {
         }
 
         Location loc = new Location(
-            player.getWorld().getServer().getWorld(warp.world()),
+            org.bukkit.Bukkit.getWorld(warp.world()),
             warp.x(), warp.y(), warp.z(), warp.yaw(), warp.pitch()
         );
 
