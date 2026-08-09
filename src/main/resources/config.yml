@@ -1,0 +1,49 @@
+# MPEssentials Configuration
+
+# Home Settings
+homes:
+  max-homes: 5
+  cooldown-seconds: 30
+
+# Teleport Request Settings
+tpa:
+  timeout-seconds: 60
+  cooldown-seconds: 10
+
+# Warp Settings
+warps:
+  require-permission: true
+
+# Kit Settings
+kits:
+  cooldown-seconds: 300
+
+# Spawn Settings
+spawn:
+  teleport-delay: 5
+
+# Messages
+messages:
+  prefix: "<gray>[<gold>MPEssentials<gray>] "
+  no-permission: "<red>You do not have permission to do that."
+  player-not-found: "<red>Player not found."
+  home-set: "<green>Home set to your current location."
+  home-deleted: "<green>Home deleted."
+  home-not-found: "<red>Home not found."
+  home-limit-reached: "<red>You have reached the maximum number of homes."
+  tpa-sent: "<green>Teleport request sent to <yellow>%player%</yellow>."
+  tpa-request: "<green><yellow>%player%</yellow> wants to teleport to you. Use /tpaccept or /tpdeny."
+  tpahere-request: "<green><yellow>%player%</yellow> wants you to teleport to them. Use /tpaccept or /tpdeny."
+  tpa-accepted: "<green>Teleport request accepted."
+  tpa-denied: "<red>Teleport request denied."
+  tpa-timeout: "<red>Teleport request timed out."
+  tpa-cooldown: "<red>You must wait before sending another request."
+  warp-set: "<green>Warp set."
+  warp-deleted: "<green>Warp deleted."
+  warp-not-found: "<red>Warp not found."
+  kit-claimed: "<green>Kit claimed successfully."
+  kit-not-found: "<red>Kit not found."
+  kit-cooldown: "<red>Wait before claiming this kit again."
+  spawn-set: "<green>Spawn location set."
+  teleporting: "<green>Teleporting..."
+  teleport-cancelled: "<red>Teleport cancelled. You moved!"

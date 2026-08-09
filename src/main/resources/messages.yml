@@ -1,0 +1,49 @@
+# MPEssentials Messages Configuration
+# Use MiniMessage format for colors and styles
+# Reference: https://docs.advntr.dev/minimessage/format.html
+
+prefix: "<gray>[<gold>MPEssentials<gray>] "
+
+# General Messages
+no-permission: "<red>You do not have permission to do that."
+player-not-found: "<red>Player not found."
+only-players: "<red>Only players can use this command.</red>"
+teleporting: "<green>Teleporting..."
+teleport-cancelled: "<red>Teleport cancelled. You moved!"
+
+# Home Messages
+home-set: "<green>Home set to your current location."
+home-deleted: "<green>Home deleted."
+home-not-found: "<red>Home not found."
+home-limit-reached: "<red>You have reached the maximum number of homes."
+home-list: "<gold>Your homes: <yellow>%homes%"
+
+# Teleport Request Messages
+tpa-sent: "<green>Teleport request sent to <yellow>%player%</yellow>."
+tpa-request: "<green><yellow>%player%</yellow> wants to teleport to you. Use /tpaccept or /tpdeny."
+tpahere-request: "<green><yellow>%player%</yellow> wants you to teleport to them. Use /tpaccept or /tpdeny."
+tpa-accepted: "<green>Teleport request accepted."
+tpa-denied: "<red>Teleport request denied."
+tpa-timeout: "<red>Teleport request timed out."
+tpa-cooldown: "<red>You must wait before sending another request."
+tpa-self: "<red>You cannot teleport to yourself."
+
+# Warp Messages
+warp-set: "<green>Warp set."
+warp-deleted: "<green>Warp deleted."
+warp-not-found: "<red>Warp not found."
+warp-list: "<gold>Available warps: <yellow>%warps%"
+warp-no-permission: "<red>You do not have permission to use this warp."
+
+# Kit Messages
+kit-claimed: "<green>Kit claimed successfully."
+kit-not-found: "<red>Kit not found."
+kit-cooldown: "<red>Wait before claiming this kit again."
+kit-list: "<gold>Available kits: <yellow>%kits%"
+kit-given: "<green>Kit given to %player%."
+
+# Spawn Messages
+spawn-set: "<green>Spawn location set."
+spawn-teleport: "<green>Teleported to spawn."
+spawn-not-set: "<red>Spawn location not set."
+spawn-teleport-other: "<green>Teleported %player% to spawn."
