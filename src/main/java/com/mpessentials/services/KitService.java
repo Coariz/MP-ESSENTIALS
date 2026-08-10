@@ -2,13 +2,14 @@ package com.mpessentials.services;
 
 import com.mpessentials.MPEssentials;
 import com.mpessentials.config.PluginConfig;
+import com.mpessentials.repositories.CooldownRepository;
 import com.mpessentials.repositories.KitData;
 import com.mpessentials.repositories.KitRepository;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 public class KitService {
 
@@ -22,25 +23,27 @@ public class KitService {
         this.cooldownRepo = cooldownRepo;
     }
 
-    public boolean claimKit(Player player, String name) {
+    public KitClaimResult claimKit(Player player, String name, boolean bypassCooldown) {
         KitData kit = repository.getKit(name).orElse(null);
         if (kit == null) {
-            return false;
+            return KitClaimResult.NOT_FOUND;
         }
 
         PluginConfig config = plugin.getPluginConfig();
         String cooldownKey = "kit:" + name;
 
-        if (cooldownRepo.hasCooldown(player.getUniqueId(), cooldownKey)) {
-            player.sendMessage(plugin.parseMessage(config.getMessage("kit-cooldown")));
-            return false;
+        if (!bypassCooldown && cooldownRepo.hasCooldown(player.getUniqueId(), cooldownKey)) {
+            return KitClaimResult.ON_COOLDOWN;
         }
 
         // Give items to player
         var inventory = player.getInventory();
         for (ItemStack item : kit.items()) {
             if (item != null && item.getType().isAir() == false) {
-                inventory.addItem(item);
+                Map<Integer, ItemStack> leftovers = inventory.addItem(item);
+                for (ItemStack leftover : leftovers.values()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), leftover);
+                }
             }
         }
 
@@ -51,7 +54,7 @@ public class KitService {
         }
 
         player.sendMessage(plugin.parseMessage(config.getMessage("kit-claimed")));
-        return true;
+        return KitClaimResult.SUCCESS;
     }
 
     public List<String> getKitNames() {
@@ -64,5 +67,11 @@ public class KitService {
 
     public void close() {
         repository.close();
+    }
+
+    public enum KitClaimResult {
+        SUCCESS,
+        NOT_FOUND,
+        ON_COOLDOWN
     }
 }

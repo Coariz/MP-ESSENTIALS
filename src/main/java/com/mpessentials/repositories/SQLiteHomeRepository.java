@@ -12,14 +12,27 @@ public class SQLiteHomeRepository implements HomeRepository {
     private final Map<UUID, List<HomeData>> cache = new ConcurrentHashMap<>();
 
     public SQLiteHomeRepository(JavaPlugin plugin) {
+        Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             String dbPath = plugin.getDataFolder().getParentFile().getAbsolutePath() + "/MPEssentials.db";
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            this.connection = conn;
             createTables();
             loadCache();
         } catch (Exception e) {
+            closeConnectionSilently(conn);
             throw new RuntimeException("Failed to initialize SQLiteHomeRepository", e);
+        }
+    }
+
+    private void closeConnectionSilently(Connection conn) {
+        if (conn == null) {
+            return;
+        }
+        try {
+            conn.close();
+        } catch (SQLException ignored) {
         }
     }
 
@@ -111,11 +124,6 @@ public class SQLiteHomeRepository implements HomeRepository {
         return cache.getOrDefault(playerUuid, new ArrayList<>()).stream()
             .filter(h -> h.name().equals(name))
             .findFirst();
-    }
-
-    @Override
-    public List<HomeData> getHomes(UUID playerUuid) {
-        return new ArrayList<>(cache.getOrDefault(playerUuid, new ArrayList<>()));
     }
 
     @Override

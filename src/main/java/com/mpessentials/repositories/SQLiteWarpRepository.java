@@ -12,14 +12,27 @@ public class SQLiteWarpRepository implements WarpRepository {
     private final Map<String, WarpData> cache = new ConcurrentHashMap<>();
 
     public SQLiteWarpRepository(JavaPlugin plugin) {
+        Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             String dbPath = plugin.getDataFolder().getParentFile().getAbsolutePath() + "/MPEssentials.db";
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            this.connection = conn;
             createTables();
             loadCache();
         } catch (Exception e) {
+            closeConnectionSilently(conn);
             throw new RuntimeException("Failed to initialize SQLiteWarpRepository", e);
+        }
+    }
+
+    private void closeConnectionSilently(Connection conn) {
+        if (conn == null) {
+            return;
+        }
+        try {
+            conn.close();
+        } catch (SQLException ignored) {
         }
     }
 
@@ -96,11 +109,6 @@ public class SQLiteWarpRepository implements WarpRepository {
     @Override
     public Optional<WarpData> getWarp(String name) {
         return Optional.ofNullable(cache.get(name));
-    }
-
-    @Override
-    public List<WarpData> getAllWarps() {
-        return new ArrayList<>(cache.values());
     }
 
     @Override

@@ -8,7 +8,6 @@ public interface HomeRepository {
     void saveHome(UUID playerUuid, String name, String world, double x, double y, double z, float yaw, float pitch);
     void deleteHome(UUID playerUuid, String name);
     Optional<HomeData> getHome(UUID playerUuid, String name);
-    List<HomeData> getHomes(UUID playerUuid);
     List<String> getHomeNames(UUID playerUuid);
     int countHomes(UUID playerUuid);
     void close();

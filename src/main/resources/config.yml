@@ -3,7 +3,6 @@
 # Home Settings
 homes:
   max-homes: 5
-  cooldown-seconds: 30
 
 # Teleport Request Settings
 tpa:
@@ -13,14 +12,6 @@ tpa:
 # Warp Settings
 warps:
   require-permission: true
-
-# Kit Settings
-kits:
-  cooldown-seconds: 300
-
-# Spawn Settings
-spawn:
-  teleport-delay: 5
 
 # Messages
 messages:
@@ -45,5 +36,3 @@ messages:
   kit-not-found: "<red>Kit not found."
   kit-cooldown: "<red>Wait before claiming this kit again."
   spawn-set: "<green>Spawn location set."
-  teleporting: "<green>Teleporting..."
-  teleport-cancelled: "<red>Teleport cancelled. You moved!"

@@ -7,11 +7,11 @@ import com.mpessentials.listeners.PlayerQuitListener;
 import com.mpessentials.commands.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MPEssentials extends JavaPlugin {
 
-    private static MPEssentials instance;
     private PluginConfig config;
     private HomeService homeService;
     private WarpService warpService;
@@ -20,31 +20,48 @@ public class MPEssentials extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-        
         saveDefaultConfig();
         config = new PluginConfig(this);
-        
+
         // Initialize repositories (async database setup)
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            HomeRepository homeRepo = new SQLiteHomeRepository(this);
-            WarpRepository warpRepo = new SQLiteWarpRepository(this);
-            KitRepository kitRepo = new SQLiteKitRepository(this);
-            CooldownRepository cooldownRepo = new SQLiteCooldownRepository(this);
-            
+            HomeRepository homeRepo = null;
+            WarpRepository warpRepo = null;
+            KitRepository kitRepo = null;
+            CooldownRepository cooldownRepo = null;
+            try {
+                homeRepo = new SQLiteHomeRepository(this);
+                warpRepo = new SQLiteWarpRepository(this);
+                kitRepo = new SQLiteKitRepository(this);
+                cooldownRepo = new SQLiteCooldownRepository(this);
+            } catch (Exception e) {
+                if (homeRepo != null) homeRepo.close();
+                if (warpRepo != null) warpRepo.close();
+                if (kitRepo != null) kitRepo.close();
+                if (cooldownRepo != null) cooldownRepo.close();
+                getLogger().severe("Failed to initialize repositories. Disabling plugin: " + e.getMessage());
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+
+            final HomeRepository home = homeRepo;
+            final WarpRepository warp = warpRepo;
+            final KitRepository kit = kitRepo;
+            final CooldownRepository cooldown = cooldownRepo;
+
             getServer().getScheduler().runTask(this, () -> {
                 // Initialize services
-                homeService = new HomeService(this, homeRepo, cooldownRepo);
-                warpService = new WarpService(this, warpRepo);
-                kitService = new KitService(this, kitRepo, cooldownRepo);
+                homeService = new HomeService(this, home, cooldown);
+                warpService = new WarpService(this, warp);
+                kitService = new KitService(this, kit, cooldown);
                 teleportRequestService = new TeleportRequestService(this);
-                
+
                 // Register commands
                 registerCommands();
-                
+
                 // Register listeners
                 registerListeners();
-                
+
                 getLogger().info("MPEssentials enabled successfully!");
             });
         });
@@ -99,10 +116,6 @@ public class MPEssentials extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
     }
 
-    public static MPEssentials getInstance() {
-        return instance;
-    }
-
     public PluginConfig getPluginConfig() {
         return config;
     }
@@ -124,11 +137,6 @@ public class MPEssentials extends JavaPlugin {
     }
 
     public Component parseMessage(String message) {
-        String prefix = getConfig().getString("messages.prefix", "<gray>[<gold>MPEssentials<gray>] ");
-        return MiniMessage.miniMessage().deserialize(prefix + message);
-    }
-
-    public Component parseMessageRaw(String message) {
-        return MiniMessage.miniMessage().deserialize(message);
+        return MiniMessage.miniMessage().deserialize(config.getPrefix() + message);
     }
 }

@@ -13,14 +13,27 @@ public class SQLiteCooldownRepository implements CooldownRepository {
     private final Map<String, Long> cache = new ConcurrentHashMap<>();
 
     public SQLiteCooldownRepository(JavaPlugin plugin) {
+        Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             String dbPath = plugin.getDataFolder().getParentFile().getAbsolutePath() + "/MPEssentials.db";
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            this.connection = conn;
             createTables();
             loadCache();
         } catch (Exception e) {
+            closeConnectionSilently(conn);
             throw new RuntimeException("Failed to initialize SQLiteCooldownRepository", e);
+        }
+    }
+
+    private void closeConnectionSilently(Connection conn) {
+        if (conn == null) {
+            return;
+        }
+        try {
+            conn.close();
+        } catch (SQLException ignored) {
         }
     }
 
@@ -29,7 +42,7 @@ public class SQLiteCooldownRepository implements CooldownRepository {
             CREATE TABLE IF NOT EXISTS cooldowns (
                 player_uuid TEXT NOT NULL,
                 key TEXT NOT NULL,
-                expiry_time REAL NOT NULL,
+                expiry_time INTEGER NOT NULL,
                 PRIMARY KEY (player_uuid, key)
             )
             """;
@@ -81,21 +94,6 @@ public class SQLiteCooldownRepository implements CooldownRepository {
     @Override
     public boolean hasCooldown(UUID playerUuid, String key) {
         return getCooldown(playerUuid, key) > 0;
-    }
-
-    @Override
-    public void removeCooldown(UUID playerUuid, String key) {
-        String sql = "DELETE FROM cooldowns WHERE player_uuid = ? AND key = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, playerUuid.toString());
-            pstmt.setString(2, key);
-            pstmt.executeUpdate();
-            
-            String cacheKey = playerUuid.toString() + ":" + key;
-            cache.remove(cacheKey);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to remove cooldown", e);
-        }
     }
 
     @Override

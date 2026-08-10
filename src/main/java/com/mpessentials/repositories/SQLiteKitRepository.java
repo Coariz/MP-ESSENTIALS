@@ -18,14 +18,27 @@ public class SQLiteKitRepository implements KitRepository {
     private final Map<String, KitData> cache = new ConcurrentHashMap<>();
 
     public SQLiteKitRepository(JavaPlugin plugin) {
+        Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             String dbPath = plugin.getDataFolder().getParentFile().getAbsolutePath() + "/MPEssentials.db";
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+            this.connection = conn;
             createTables();
             loadCache();
         } catch (Exception e) {
+            closeConnectionSilently(conn);
             throw new RuntimeException("Failed to initialize SQLiteKitRepository", e);
+        }
+    }
+
+    private void closeConnectionSilently(Connection conn) {
+        if (conn == null) {
+            return;
+        }
+        try {
+            conn.close();
+        } catch (SQLException ignored) {
         }
     }
 
@@ -128,11 +141,6 @@ public class SQLiteKitRepository implements KitRepository {
     @Override
     public Optional<KitData> getKit(String name) {
         return Optional.ofNullable(cache.get(name));
-    }
-
-    @Override
-    public List<KitData> getAllKits() {
-        return new ArrayList<>(cache.values());
     }
 
     @Override

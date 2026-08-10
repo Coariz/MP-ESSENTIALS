@@ -2,6 +2,7 @@ package com.mpessentials.commands;
 
 import com.mpessentials.MPEssentials;
 import com.mpessentials.config.PluginConfig;
+import com.mpessentials.services.KitService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,8 +46,11 @@ public class KitCommand implements CommandExecutor, TabCompleter {
         }
 
         String kitName = args[0];
-        if (!plugin.getKitService().claimKit(player, kitName)) {
+        var result = plugin.getKitService().claimKit(player, kitName, false);
+        if (result == KitService.KitClaimResult.NOT_FOUND) {
             player.sendMessage(plugin.parseMessage(config.getMessage("kit-not-found")));
+        } else if (result == KitService.KitClaimResult.ON_COOLDOWN) {
+            player.sendMessage(plugin.parseMessage(config.getMessage("kit-cooldown")));
         }
         return true;
     }

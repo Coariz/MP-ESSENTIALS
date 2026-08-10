@@ -1,6 +1,5 @@
 plugins {
     java
-    `maven-publish`
 }
 
 group = "com.mpessentials"
@@ -14,7 +13,6 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -34,9 +32,25 @@ tasks {
 
     jar {
         archiveBaseName.set("MPEssentials")
-        
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         // Include sqlite-jdbc in the jar (shade/merge)
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }) {
+            // Package only the platforms the server runs on; drop the rest (~24MB of native libs)
+            exclude("org/sqlite/native/Mac/**")
+            exclude("org/sqlite/native/Linux-Android/**")
+            exclude("org/sqlite/native/Linux-Musl/**")
+            exclude("org/sqlite/native/FreeBSD/**")
+            exclude("org/sqlite/native/Linux/x86/**")
+            exclude("org/sqlite/native/Linux/aarch64/**")
+            exclude("org/sqlite/native/Linux/arm/**")
+            exclude("org/sqlite/native/Linux/armv6/**")
+            exclude("org/sqlite/native/Linux/armv7/**")
+            exclude("org/sqlite/native/Linux/ppc64/**")
+            exclude("org/sqlite/native/Windows/x86/**")
+            exclude("org/sqlite/native/Windows/aarch64/**")
+            exclude("org/sqlite/native/Windows/armv7/**")
+
             exclude("META-INF/*.SF")
             exclude("META-INF/*.DSA")
             exclude("META-INF/*.RSA")

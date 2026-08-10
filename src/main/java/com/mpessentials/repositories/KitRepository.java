@@ -10,7 +10,6 @@ public interface KitRepository {
     void saveKit(String name, List<ItemStack> items, int cooldownSeconds);
     void deleteKit(String name);
     Optional<KitData> getKit(String name);
-    List<KitData> getAllKits();
     List<String> getKitNames();
     boolean kitExists(String name);
     void close();

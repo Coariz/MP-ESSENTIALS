@@ -15,10 +15,6 @@ public class PluginConfig {
         return plugin.getConfig().getInt("homes.max-homes", 5);
     }
 
-    public int getHomeCooldown() {
-        return plugin.getConfig().getInt("homes.cooldown-seconds", 30);
-    }
-
     public int getTpaTimeout() {
         return plugin.getConfig().getInt("tpa.timeout-seconds", 60);
     }
@@ -29,14 +25,6 @@ public class PluginConfig {
 
     public boolean isWarpPermissionRequired() {
         return plugin.getConfig().getBoolean("warps.require-permission", true);
-    }
-
-    public int getKitCooldown() {
-        return plugin.getConfig().getInt("kits.cooldown-seconds", 300);
-    }
-
-    public int getSpawnTeleportDelay() {
-        return plugin.getConfig().getInt("spawn.teleport-delay", 5);
     }
 
     public String getMessage(String key) {

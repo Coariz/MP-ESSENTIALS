@@ -41,6 +41,9 @@ permissions:
   mpessentials.spawn.set:
     description: Allows admins to set spawn
     default: op
+  mpessentials.spawn.admin:
+    description: Allows admins to teleport other players to spawn
+    default: op
   mpessentials.admin:
     description: Full admin access to all commands
     default: op
@@ -56,6 +59,7 @@ permissions:
       mpessentials.kit.admin: true
       mpessentials.spawn: true
       mpessentials.spawn.set: true
+      mpessentials.spawn.admin: true
 
 commands:
   home:

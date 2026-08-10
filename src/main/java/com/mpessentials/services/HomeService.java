@@ -3,12 +3,10 @@ package com.mpessentials.services;
 import com.mpessentials.MPEssentials;
 import com.mpessentials.config.PluginConfig;
 import com.mpessentials.repositories.*;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public class HomeService {
 
@@ -25,7 +23,8 @@ public class HomeService {
     public boolean setHome(Player player, String name) {
         PluginConfig config = plugin.getPluginConfig();
         
-        if (repository.countHomes(player.getUniqueId()) >= config.getMaxHomes()) {
+        if (repository.getHome(player.getUniqueId(), name).isEmpty()
+                && repository.countHomes(player.getUniqueId()) >= config.getMaxHomes()) {
             player.sendMessage(plugin.parseMessage(config.getMessage("home-limit-reached")));
             return false;
         }

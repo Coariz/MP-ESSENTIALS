@@ -2,6 +2,7 @@ package com.mpessentials.commands;
 
 import com.mpessentials.MPEssentials;
 import com.mpessentials.config.PluginConfig;
+import com.mpessentials.services.KitService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,7 +43,8 @@ public class GiveKitCommand implements CommandExecutor, TabCompleter {
         }
 
         String kitName = args[1];
-        if (!plugin.getKitService().claimKit(target, kitName)) {
+        var result = plugin.getKitService().claimKit(target, kitName, true);
+        if (result == KitService.KitClaimResult.NOT_FOUND) {
             sender.sendMessage(plugin.parseMessage(config.getMessage("kit-not-found")));
         } else {
             sender.sendMessage(plugin.parseMessage("<green>Kit given to " + target.getName() + "</green>"));
